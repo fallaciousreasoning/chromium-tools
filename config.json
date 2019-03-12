@@ -1,0 +1,6 @@
+{
+    "execute_flags": [
+        "--enable-ui-dev-tools",
+        "--enable-features=WritableFilesAPI"
+    ]
+}

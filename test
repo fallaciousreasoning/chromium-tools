@@ -5,6 +5,8 @@ import argcomplete
 import sys
 import os
 
+from utils import get_configurations, get_executables
+
 def build_command(args):
 	command = ""
 
@@ -21,17 +23,6 @@ def build_command(args):
 
 	return command
 
-def get_executables():
-	for name in os.listdir('out/Default'):
-		path = f'out/Default/{name}'
-		if not os.path.isfile(path): continue
-		if not os.access(path, os.X_OK): continue
-
-		yield name
-
-def get_configurations():
-	return os.listdir('out/')
-
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description="Run chrome tests.")
 
@@ -39,7 +30,7 @@ if __name__ == '__main__':
 	parser.add_argument('--no-build', action='store_true')
 	parser.add_argument('-V', '--visible', action='store_true')
 	parser.add_argument('-C', '--configuration', default='Default', choices=get_configurations())
-	parser.add_argument('-E', '--executable', default='browser_tests', choices=list(get_executables()))
+	parser.add_argument('-E', '--executable', default='browser_tests', choices=get_executables())
 	argcomplete.autocomplete(parser)
 	args = parser.parse_args(sys.argv[1:])
 

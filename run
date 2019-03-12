@@ -1,0 +1,50 @@
+#!/usr/bin/python3.6
+
+import argparse
+import argcomplete
+import sys
+
+from utils import get_configurations, get_executables
+
+def build(args):
+	executable = args.executable
+	if executable == 'all': executable = ''
+
+	return f'autoninja -C out/{args.configuration} {executable}'
+
+def run(args):
+	executable = args.executable
+	if executable == 'all': executable = 'chrome'
+
+	return f'./out/{args.configuration}/{executable}'
+
+if __name__ == '__main__':
+	parser = argparse.ArgumentParser(description="Build and run Chromium.")
+
+	parser.add_argument('configuration', nargs='?', default='Default', choices=get_configurations())
+	parser.add_argument('executable', nargs='?', default='chrome', choices=get_executables().extend(['all']))
+	parser.add_argument('--no-print-command', action='store_true')
+
+	run_build_exclusion = parser.add_mutually_exclusive_group(required=False)
+	run_build_exclusion.add_argument('--no-build', action='store_true')
+	run_build_exclusion.add_argument('--no-run', action='store_true')
+
+
+	argcomplete.autocomplete(parser)
+	args = parser.parse_args(sys.argv[1:])
+
+
+	command = ''
+	if not args.no_build:
+		command += build(args)
+	if not args.no_run:
+		if len(command) != 0:
+			command += ' && '
+		command += run(args)
+
+	if not args.no_print_command:
+		print(command)
+
+	# os.system(command)
+  
+
