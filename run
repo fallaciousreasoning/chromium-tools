@@ -4,47 +4,63 @@ import argparse
 import argcomplete
 import sys
 
-from utils import get_configurations, get_executables
+from utils import get_configurations, get_executables, load_config
 
 def build(args):
 	executable = args.executable
+	# If the executable is 'all' don't give ninja a target
 	if executable == 'all': executable = ''
 
 	return f'autoninja -C out/{args.configuration} {executable}'
 
 def run(args):
 	executable = args.executable
+	# If the executable is 'all' default to running chrome
 	if executable == 'all': executable = 'chrome'
 
-	return f'./out/{args.configuration}/{executable}'
+	extra_args = ''
+	# If we aren't ignoring extra config args, add them to the command
+	if not args.ignore_extra_args:
+		extra_args += ' '.join(load_config()['run_args'])
+
+	return f'./out/{args.configuration}/{executable} {extra_args}'
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description="Build and run Chromium.")
 
 	parser.add_argument('configuration', nargs='?', default='Default', choices=get_configurations())
 	parser.add_argument('executable', nargs='?', default='chrome', choices=get_executables().extend(['all']))
-	parser.add_argument('--no-print-command', action='store_true')
+	parser.add_argument('--ignore-extra-args', action='store_true', help='Ignore additional arguments from config.json')
+	
+	print_or_run = parser.add_mutually_exclusive_group(required=False)
+	print_or_run.add_argument('--no-print-command', action='store_true', help="Don't print the command before executing it")
+	print_or_run.add_argument('--dry-run', action='store_true', help="Don't execute the command, just print it out.")
 
 	run_build_exclusion = parser.add_mutually_exclusive_group(required=False)
-	run_build_exclusion.add_argument('--no-build', action='store_true')
-	run_build_exclusion.add_argument('--no-run', action='store_true')
-
+	run_build_exclusion.add_argument('--no-build', action='store_true', help="Don't build Chromium before running")
+	run_build_exclusion.add_argument('--build-only', action='store_true', help="Don't run Chromium after building")
 
 	argcomplete.autocomplete(parser)
 	args = parser.parse_args(sys.argv[1:])
 
-
 	command = ''
+
+	# If we are building, add the build command
 	if not args.no_build:
 		command += build(args)
-	if not args.no_run:
+	# If we aren't just building, run the command
+	if not args.build_only:
+		# If we're also building, join the build and run command
 		if len(command) != 0:
 			command += ' && '
 		command += run(args)
 
+    # Print the command, unless we should suppress it.
 	if not args.no_print_command:
 		print(command)
 
-	# os.system(command)
+	# If this isn't a dry run, print the command
+	if not args.dry_run:
+		os.system(command)
   
 
