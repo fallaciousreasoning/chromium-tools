@@ -4,17 +4,13 @@ import argparse
 import argcomplete
 import sys
 import os
-
-def get_folder():
-    return os.path.dirname(os.path.realpath(__file__))
+from utils import get_installation_folder   
 
 def get_runnable_scripts():
-    os.listdir(get_folder())
-
-    return [file for file in os.listdir(get_folder()) if not '.' in file and os.path.isfile(file)]
+    return [file for file in os.listdir(get_installation_folder()) if not '.' in file and os.path.isfile(file)]
 
 def make_scripts_executable():
-    folder = get_folder()
+    folder = get_installation_folder()
     for name in os.listdir(folder):
         path = os.path.join(folder, name)
 
@@ -49,7 +45,7 @@ def install_completions(args):
 
 
 def install_scripts(args):
-    folder = get_folder()
+    folder = get_installation_folder()
 
     path = os.environ['PATH']
     if folder in path:
@@ -67,7 +63,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--no-completions', action='store_true')
     parser.add_argument('--bash-config', default=os.path.join(os.getenv('HOME'), '.bashrc'))
-    parser.add_argument('--completions-file', default=f'{get_folder()}/.bash_completions')
+    parser.add_argument('--completions-file', default=f'{get_installation_folder()}/.bash_completions')
 
     argcomplete.autocomplete(parser)
     args = parser.parse_args(sys.argv[1:])

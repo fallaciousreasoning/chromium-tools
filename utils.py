@@ -1,6 +1,8 @@
 import os
 import json
 
+def get_installation_folder():
+    return os.path.dirname(os.path.realpath(__file__))
 
 def get_executables_lazy():
     if not os.path.exists('out/Default'): return ['chrome']
@@ -26,6 +28,7 @@ def get_configurations():
 
 
 def load_config():
-    with open('config.json') as f:
+    config_path = os.path.join(get_installation_folder(), 'config.json')
+    with open(config_path) as f:
         json_string = f.read()
         return json.loads(json_string)

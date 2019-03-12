@@ -3,6 +3,7 @@
 import argparse
 import argcomplete
 import sys
+import os
 
 from utils import get_configurations, get_executables, load_config
 
