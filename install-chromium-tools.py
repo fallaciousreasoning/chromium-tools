@@ -57,7 +57,7 @@ def install_scripts(args):
         return
 
     with open(args.bash_config, 'a+') as f:
-        f.write(f'\n#Add chromium tools to path\nexport $PATH:{folder}\n')
+        f.write(f'\n#Add chromium tools to path\nexport PATH="$PATH:{folder}"\n')
 
     print(f'Added {folder} to $PATH')
 
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Install Chromium Scripts.")
 
     parser.add_argument('--no-completions', action='store_true')
-    parser.add_argument('--bash-config', default='~/.bashrc')
+    parser.add_argument('--bash-config', default=os.path.join(os.getenv('HOME'), '.bashrc'))
     parser.add_argument('--completions-file', default=f'{get_folder()}/.bash_completions')
 
     argcomplete.autocomplete(parser)
