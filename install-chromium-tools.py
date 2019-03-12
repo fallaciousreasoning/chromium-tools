@@ -32,16 +32,18 @@ def install_completions(args):
     print("Updating script completions file...")
     scripts = get_runnable_scripts()
     with open(args.completions_file, 'w') as f:
+        f.write('#!bin/bash')
         for script in scripts:
             f.write(f'eval "$(register-python-argcomplete {script})"\n')
     print("Updated!")
-    
+
     include = f'source {args.completions_file}'
     if not include in bash_config:
         print("Adding completions to bash")
         with open(args.bash_config, 'a+') as f:
             f.write(f'\n#Install chromium tools auto completions\n{include}\n')
         print("Added!")
+    os.system(include) # Update completions for current shell
 
 
 def install_scripts(args):
@@ -52,9 +54,11 @@ def install_scripts(args):
         print("Scripts already in path!")
         return
 
+    export = f'export PATH="$PATH:{folder}"'
     with open(args.bash_config, 'a+') as f:
-        f.write(f'\n#Add chromium tools to path\nexport PATH="$PATH:{folder}"\n')
+        f.write(f'\n#Add chromium tools to path\n{export}\n')
 
+    os.system(export) # Add to current shell
     print(f'Added {folder} to $PATH')
 
 
