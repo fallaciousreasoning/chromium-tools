@@ -1,0 +1,51 @@
+#!/usr/bin/python3.6
+
+import argparse
+import argcomplete
+import sys
+import os
+
+def build_command(args):
+	command = ""
+
+	configuration = f'out/{args.configuration}'
+
+	if not args.no_build:
+		command = f"autoninja -C {configuration} {args.executable} && " + command
+
+	execute = f'./{configuration}/{args.executable} --gtest_filter="*{args.filter}*"'
+	if args.visible:
+		command += f'{execute} --enable-pixel-output-in-tests --ui-test-action-max-timeout=1000000 --test-launcher-timeout=1000000 --vmodule=bookmark_app_navigation*=1'
+	else:
+		command += f'xvfb-run -s "-screen 0 1024x768x24" {execute}'
+
+	return command
+
+def get_executables():
+	for name in os.listdir('out/Default'):
+		path = f'out/Default/{name}'
+		if not os.path.isfile(path): continue
+		if not os.access(path, os.X_OK): continue
+
+		yield name
+
+def get_configurations():
+	return os.listdir('out/')
+
+if __name__ == '__main__':
+	parser = argparse.ArgumentParser(description="Run chrome tests.")
+
+	parser.add_argument('filter')
+	parser.add_argument('--no-build', action='store_true')
+	parser.add_argument('-V', '--visible', action='store_true')
+	parser.add_argument('-C', '--configuration', default='Default', choices=get_configurations())
+	parser.add_argument('-E', '--executable', default='browser_tests', choices=list(get_executables()))
+	argcomplete.autocomplete(parser)
+	args = parser.parse_args(sys.argv[1:])
+
+	command = build_command(args)
+	print(command)
+
+	os.system(command)
+  
+
