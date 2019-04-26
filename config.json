@@ -1,6 +1,6 @@
 {
     "run_args": [
         "--enable-ui-dev-tools",
-        "--enable-features=WritableFilesAPI"
+        "--enable-features=NativeFilesystemAPI"
     ]
 }

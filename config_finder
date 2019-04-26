@@ -1,0 +1,53 @@
+#!/usr/bin/python3.6
+
+import argparse
+import argcomplete
+import sys
+import os
+import os.path as path
+
+
+
+def get_configs(config_name, f, result=[]):
+  if f == '': return result
+
+  if path.isfile(f):
+    f = path.dirname(f)
+
+  files = os.listdir(f)
+  
+  if config_name in files:
+    result.append(path.join(f, config_name))
+
+  return get_configs(config_name, path.dirname(f), result)
+
+def execute(args):
+  results = get_configs(args.config, args.file)
+
+  if len(results) == 0:
+    print('No configs found')
+    return
+
+  if args.list:
+    for result in results: print(result)
+  else: print(results[0])
+
+  if args.open:
+    os.system(f'$EDITOR {results[0]}')
+
+if __name__ == '__main__':
+  parser = argparse.ArgumentParser(description="Find build/config files related file.")
+
+  parser.add_argument('file')
+  parser.add_argument('--open', action='store_true', help="First found config should be opened")
+  parser.add_argument('--list', action='store_true', help="All found configs should be listed")
+  parser.add_argument('--config', required=True, help="The name of the config file to check for in parent directories")
+
+  argcomplete.autocomplete(parser)
+  args = parser.parse_args(sys.argv[1:])
+  execute(args)
+  
+
+
+  
+
