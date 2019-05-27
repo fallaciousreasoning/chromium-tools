@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Uncommit everything back to upstream.
+git reset @{u} --soft
+
+# Now commit the files.
+git commit "@"
