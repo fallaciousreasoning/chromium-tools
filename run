@@ -56,15 +56,11 @@ def run(args):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description="Build and run Chromium.")
 
-	parser.add_argument('configuration', nargs='?',
-						default='Default', choices=get_configurations())
-	parser.add_argument('executable', nargs='?', default='chrome',
-						choices=get_executables().extend(['all']))
 	parser.add_argument('--ignore-extra-args', action='store_true',
 						help='Ignore additional arguments from config.json')
-	parser.add_argument('--enable-features', nargs='+',
+	parser.add_argument('--enable-features', nargs='+', default=[],
 						help='Features to enable on Chromium')
-	parser.add_argument('--additional-flags', nargs='?', help='A comma separated list of additional flags to pass to Chromium')
+	parser.add_argument('--additional-flags', nargs='?', default=',', help='A comma separated list of additional flags to pass to Chromium')
 
 	print_or_run = parser.add_mutually_exclusive_group(required=False)
 	print_or_run.add_argument('--no-print-command', action='store_true',
@@ -78,6 +74,15 @@ if __name__ == '__main__':
 	run_build_exclusion.add_argument(
 		'--build-only', action='store_true', help="Don't run Chromium after building")
 
+	parser.add_argument('configuration', nargs='?',
+						default='Default', choices=get_configurations())
+
+	configuration = parser.parse_known_args(sys.argv[1:])[0].configuration
+	executables = get_executables(configuration)
+	executables.append('all')
+	parser.add_argument('executable', nargs='?', default='chrome',
+						choices=executables)
+	
 	argcomplete.autocomplete(parser)
 	args = parser.parse_args(sys.argv[1:])
 

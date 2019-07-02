@@ -4,11 +4,14 @@ import json
 def get_installation_folder():
     return os.path.dirname(os.path.realpath(__file__))
 
-def get_executables_lazy():
-    if not os.path.exists('out/Default'): return ['chrome']
+def get_executables_lazy(configuration):
+    if not configuration: configuration = 'Default'
 
-    for name in os.listdir('out/Default'):
-        path = f'out/Default/{name}'
+    folder_path = f'out/{configuration}'
+    if not os.path.exists(folder_path): return ['chrome']
+
+    for name in os.listdir(folder_path):
+        path = f'{folder_path}/{name}'
         if not os.path.isfile(path):
             continue
         if not os.access(path, os.X_OK): continue
@@ -16,8 +19,8 @@ def get_executables_lazy():
         yield name
 
 
-def get_executables():
-    return list(get_executables_lazy())
+def get_executables(configuration=None):
+    return list(get_executables_lazy(configuration))
 
 
 def get_configurations():
