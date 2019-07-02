@@ -60,7 +60,6 @@ if __name__ == '__main__':
 						help='Ignore additional arguments from config.json')
 	parser.add_argument('--enable-features', nargs='+', default=[],
 						help='Features to enable on Chromium')
-	parser.add_argument('additional', nargs=argparse.REMAINDER, default=[])
 
 	print_or_run = parser.add_mutually_exclusive_group(required=False)
 	print_or_run.add_argument('--no-print-command', action='store_true',
@@ -82,6 +81,9 @@ if __name__ == '__main__':
 	executables.append('all')
 	parser.add_argument('executable', nargs='?', default='chrome',
 						choices=executables)
+
+    # Store extra arguments to pass to chromium.
+	parser.add_argument('additional', nargs=argparse.REMAINDER, default=[])
 	
 	argcomplete.autocomplete(parser)
 	args = parser.parse_args(sys.argv[1:])
