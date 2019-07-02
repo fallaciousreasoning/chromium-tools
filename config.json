@@ -1,6 +1,7 @@
 {
     "run_args": [
         "--enable-ui-dev-tools",
-        "--enable-features=NativeFilesystemAPI"
+        "--enable-features=NativeFileSystemAPI,FileHandlingAPI,SystemWebApps",
+        "--enable-experimental-web-platform-features"
     ]
 }
