@@ -5,8 +5,8 @@ import argcomplete
 import sys
 import os
 
+from choices_completer import ChoicesCompleter
 from utils import get_configurations, get_executables, load_config
-
 
 def build(args):
 	executable = args.executable
@@ -79,8 +79,7 @@ if __name__ == '__main__':
 	configuration = parser.parse_known_args(sys.argv[1:])[0].configuration
 	executables = get_executables(configuration)
 	executables.append('all')
-	parser.add_argument('executable', nargs='?', default='chrome',
-						choices=executables)
+	parser.add_argument('executable', nargs='?', default='chrome').completer = ChoicesCompleter(executables)
 
     # Store extra arguments to pass to chromium.
 	parser.add_argument('additional', nargs=argparse.REMAINDER, default=[])

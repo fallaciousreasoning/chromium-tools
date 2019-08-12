@@ -5,6 +5,7 @@ import argcomplete
 import sys
 import os
 
+from choices_completer import ChoicesCompleter
 from utils import get_configurations, get_executables
 
 def build_command(args):
@@ -30,7 +31,7 @@ if __name__ == '__main__':
 	parser.add_argument('--no-build', action='store_true')
 	parser.add_argument('-V', '--visible', action='store_true')
 	parser.add_argument('-C', '--configuration', default='Default', choices=get_configurations())
-	parser.add_argument('-E', '--executable', default='browser_tests', choices=get_executables())
+	parser.add_argument('-E', '--executable', default='browser_tests').completer = ChoicesCompleter(get_executables())
 	argcomplete.autocomplete(parser)
 	args = parser.parse_args(sys.argv[1:])
 
