@@ -1,7 +1,7 @@
 {
     "run_args": [
         "--enable-ui-dev-tools",
-        "--enable-features=NativeFileSystemAPI,FileHandlingAPI,SystemWebApps",
+        "--enable-features=NativeFileSystemAPI,FileHandlingAPI,SystemWebApps,EnableTouchableAppContextMenu",
         "--enable-experimental-web-platform-features"
     ]
 }
