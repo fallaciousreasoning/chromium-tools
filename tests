@@ -17,6 +17,9 @@ def build_command(args):
 		command = f"autoninja -C {configuration} {args.executable} && " + command
 
 	execute = f'./{configuration}/{args.executable} --gtest_filter="*{args.filter}*"'
+	if args.additional:
+		execute = f'{execute} {" ".join(args.additional)}'
+
 	if args.visible:
 		command += f'{execute} --enable-pixel-output-in-tests --ui-test-action-max-timeout=1000000 --test-launcher-timeout=1000000 --vmodule=bookmark_app_navigation*=1'
 	else:
@@ -32,6 +35,10 @@ if __name__ == '__main__':
 	parser.add_argument('-V', '--visible', action='store_true')
 	parser.add_argument('-C', '--configuration', default='Default', choices=get_configurations())
 	parser.add_argument('-E', '--executable', default='browser_tests').completer = ChoicesCompleter(get_executables())
+
+	# Store extra arguments to pass to test executable.
+	parser.add_argument('additional', nargs=argparse.REMAINDER, default=[])
+
 	argcomplete.autocomplete(parser)
 	args = parser.parse_args(sys.argv[1:])
 
