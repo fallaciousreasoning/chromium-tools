@@ -23,6 +23,10 @@ def make_scripts_executable():
         os.system(f'chmod +x {name}')
         print("Done!")
 
+def install_startup_tasks(args):
+    # Add goma to startup.
+    os.system(f'ln -s ./start_goma {os.getenv("HOME")}/.config/autostart-scripts/start_goma')
+
 
 def install_completions(args):
     bash_config = ''
@@ -74,6 +78,7 @@ if __name__ == '__main__':
 
     install_scripts(args)
     make_scripts_executable()
+    install_completions(args)
 
     if not args.no_completions:
         install_completions(args)
