@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python /usr/local/google/home/harrisjay//goma/goma_ctl.py ensure_start
