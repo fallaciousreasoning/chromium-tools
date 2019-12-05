@@ -28,7 +28,8 @@ def install_startup_tasks(args):
     os.system(f'ln -s ./start_goma {os.getenv("HOME")}/.config/autostart-scripts/start_goma')
 
 def install_tasks():
-    os.system('(crontab -l 2>/dev/null; echo "0 0 0 1/1 * ? * update-compile-commands") | crontab -')
+    # Every day, update the compile commands.
+    os.system('(crontab -l 2>/dev/null; echo "0 0 * * * update-compile-commands") | crontab -')
 
 def install_completions(args):
     bash_config = ''
