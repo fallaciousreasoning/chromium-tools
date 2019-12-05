@@ -27,6 +27,8 @@ def install_startup_tasks(args):
     # Add goma to startup.
     os.system(f'ln -s ./start_goma {os.getenv("HOME")}/.config/autostart-scripts/start_goma')
 
+def install_tasks():
+    os.system('(crontab -l 2>/dev/null; echo "0 0 0 1/1 * ? * update-compile-commands") | crontab -')
 
 def install_completions(args):
     bash_config = ''
@@ -79,6 +81,7 @@ if __name__ == '__main__':
     install_scripts(args)
     make_scripts_executable()
     install_completions(args)
+    install_tasks()
 
     if not args.no_completions:
         install_completions(args)

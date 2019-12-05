@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd /usr/local/google/home/harrisjay/chrome/src
+tools/clang/scripts/generate_compdb.py -p out/Default > compile_commands.json
